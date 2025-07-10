@@ -2,13 +2,24 @@ const express = require('express');
 const http = require('http');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { Server } = require('socket.io');
 const dotenv = require('dotenv');
 const errorHandler = require('./utils.js/errorHandling');
 dotenv.config();
 
 const userRoute = require('./routes/userRoute');
+const roomRoute = require('./routes/roomRoute');
+
 const app = express();
 const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST']
+    }
+});
+
+require('./socket')(io);
 
 // Middleware
 app.use(cors());
@@ -16,6 +27,8 @@ app.use(express.json());
 
 // Routes
 app.use('/api/user', userRoute);
+app.use('/api/room', roomRoute);
+
 // Global error handler
 app.use(errorHandler)
 
