@@ -1,8 +1,33 @@
-const AppError = require("../utils.js/appError");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const AppError = require("../utils.js/appError");
 const catchAsyncError = require("../utils.js/catchAsyncError");
+const { promisify } = require('util');
+const User = require("../models/User");
 
+const protectRoute = catchAsyncError(async (req, res, next) => {
+    //check if there is token
+    let token;
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith('Bearer')
+    ) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+    if (!token)
+        return next(
+            new AppError('you are not logged in,please log in to have access', 401),
+    );
+    //verify token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    //check if this user is still exist
+    const freshUser = await User.findById(decoded.id);
+    if (!freshUser) {
+        return new appError('this user is no longer exist', 401);
+    }
+    //here i added the user data to the request bs i may need it in the future
+    req.user = freshUser;
+    next();
+});
 
 const login = catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;
@@ -50,4 +75,4 @@ const register = catchAsyncError(async (req, res, next) => {
 );
 
 
-module.exports = { register, login };
+module.exports = { register, login, protectRoute };
