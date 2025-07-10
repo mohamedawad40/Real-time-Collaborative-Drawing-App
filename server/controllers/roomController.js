@@ -2,6 +2,28 @@ const catchAsyncError = require("../utils.js/catchAsyncError");
 const AppError = require("../utils.js/appError");
 const Room = require("../models/Room");
 
+const getAllPublicRooms = async (req, res, next) => {
+    try {
+        const rooms = await Room.find({ roomType: 'public' });
+        res.status(200).json({ success: true, rooms });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// GET /api/rooms/:id
+const getRoomById = async (req, res, next) => {
+    try {
+        const room = await Room.findById(req.params.id).populate('participants', 'username');
+
+        if (!room) return next(new AppError('Room not found', 404));
+
+        res.status(200).json({ success: true, room });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const joinRoom = catchAsyncError(async (req, res, next) => {
     const { roomId } = req.params;
     if (!roomId) {
@@ -49,4 +71,4 @@ const createRoom = catchAsyncError(async (req, res, next) => {
     });
 })
 
-module.exports = { createRoom, joinRoom };
+module.exports = { createRoom, joinRoom, getAllPublicRooms, getRoomById };
