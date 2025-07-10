@@ -1,5 +1,12 @@
 const AppError = require("../utils.js/appError");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+
+const signToken = function (id) {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+};
 
 const register = async (req, res, next) => {
     try {
@@ -17,7 +24,8 @@ const register = async (req, res, next) => {
             password
         });
         await newUser.save();
-        return res.status(201).json({ message: 'User registered successfully' });
+        const token = signToken(newUser._id);
+        return res.status(201).json({ status: 'success', token, message: 'User registered successfully' });
     } catch (error) {
         console.error('Error registering user:', error);
         return next(new AppError('Error registering user', 500));
