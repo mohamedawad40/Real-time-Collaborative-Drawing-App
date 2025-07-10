@@ -6,17 +6,14 @@ const roomSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    users: [{
+    participants: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    drawings: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Drawing'
-    }],
-    isPublic: {
-        type: Boolean,
-        default: true
+    roomType: {
+        type: String,
+        enum: ['public', 'private'],
+        default: 'public'
     },
     createdAt: {
         type: Date,
