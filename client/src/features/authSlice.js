@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { register } from '../app/hooks';
+import { login, logout, register } from '../app/hooks';
 
 const user = JSON.parse(localStorage.getItem('user'));
 
@@ -30,7 +30,24 @@ const authSlice = createSlice({
                 state.message = action.payload;
                 state.user = null;
             })
-
+            .addCase(login.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(login.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.user = action.payload;
+            })
+            .addCase(login.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+                state.user = null;
+            })
+            // Logout
+            .addCase(logout.fulfilled, (state) => {
+                state.user = null;
+            });
     }
 })
 
