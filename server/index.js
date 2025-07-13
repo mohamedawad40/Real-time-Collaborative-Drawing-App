@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*',
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST']
     }
 });
@@ -22,7 +22,13 @@ const io = new Server(server, {
 require('./socket')(io);
 
 // Middleware
-app.use(cors());
+app.use(cors(
+    {
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST'],
+        credentials: true
+    }
+));
 app.use(express.json());
 
 // Routes

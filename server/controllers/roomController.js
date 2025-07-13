@@ -14,7 +14,7 @@ const getAllPublicRooms = async (req, res, next) => {
 // GET /api/rooms/:id
 const getRoomById = async (req, res, next) => {
     try {
-        const room = await Room.findById(req.params.id).populate('participants', 'username');
+        const room = await Room.findById(req.params.id).populate('participants');
 
         if (!room) return next(new AppError('Room not found', 404));
 
