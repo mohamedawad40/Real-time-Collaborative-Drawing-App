@@ -2,13 +2,13 @@ import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux";
 import  { register as registerUser } from '../app/hooks';
 import { useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const dispatch = useDispatch();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const { isLoading, isSuccess, isError, message } = useSelector((state) => state.auth);
 
     const onSubmit = data => {
@@ -17,12 +17,12 @@ const Register = () => {
     };
 
     useEffect(() => {
-        // if (isSuccess) navigate('/rooms');
         if (isSuccess) console.log('register succeed....');
-    }, [isSuccess]);
+        if (isSuccess) navigate('/login');
+    }, [isSuccess, navigate]);
 
     return (
-        <div className="bg-white p-8 rounded shadow-md w-96">
+        <div className="bg-white p-8 rounded shadow-md w-full max-w-md mx-auto mt-10">
             <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
             {isError && <div className="text-red-500 mb-4">{message}</div>}
             {isLoading && <div className="text-blue-500 mb-4">Loading...</div>}
