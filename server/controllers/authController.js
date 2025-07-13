@@ -36,7 +36,7 @@ const login = catchAsyncError(async (req, res, next) => {
         return next(new AppError('please enter email and password', 404));
 
     //check if email and password exist
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Invalid email or password', 401));
