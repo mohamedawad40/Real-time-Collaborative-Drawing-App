@@ -31,7 +31,7 @@ function Header() {
         {open && (
             <div className="md:hidden bg-white border-t border-gray-200">
             <nav className="flex flex-col px-6 py-4 space-y-3 text-gray-700">
-                <Link to="/rooms" className="hover:text-red-600 transition">Rooms</Link>
+                <Link to="/" className="hover:text-red-600 transition">Rooms</Link>
                 <Link to="/create" className="hover:text-red-600 transition">Create</Link>
                 <Link to="/chat" className="hover:text-red-600 transition">Chat</Link>
             </nav>
