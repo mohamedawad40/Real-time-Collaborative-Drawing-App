@@ -4,7 +4,8 @@ const Room = require("../models/Room");
 
 const getAllPublicRooms = async (req, res, next) => {
     try {
-        const rooms = await Room.find({ roomType: 'public' });
+        const rooms = await Room.find({ roomType: 'public' }).select({ name: 1, participants: 1, roomType: 1 });
+        console.log('rooms', rooms)
         res.status(200).json({ success: true, rooms });
     } catch (error) {
         next(error);
@@ -25,6 +26,7 @@ const getRoomById = async (req, res, next) => {
 };
 
 const joinRoom = catchAsyncError(async (req, res, next) => {
+    console.log('req.params', req.params);
     const { roomId } = req.params;
     if (!roomId) {
         return next(new AppError('Room ID is required', 400));
@@ -35,11 +37,11 @@ const joinRoom = catchAsyncError(async (req, res, next) => {
         return next(new AppError('Room not found', 404));
     }
     // Check if the user is already a participant
-    if (room.participants.includes(req.user._id)) {
-        return next(new AppError('You are already a participant in this room', 400));
+    if (!room.participants.includes(req.user._id)) {
+        room.participants.push(req.user._id);
+        // return next(new AppError('You are already a participant in this room', 400));
     }
-    console.log('user', req.user);
-    room.participants.push(req.user._id);
+    // console.log('user', req.user);
     await room.save();
 
     res.status(200).json({
@@ -52,13 +54,13 @@ const joinRoom = catchAsyncError(async (req, res, next) => {
 })
 
 const createRoom = catchAsyncError(async (req, res, next) => {
-    const { roomName, roomType } = req.body;
-    if (!roomName) {
+    const { name, roomType } = req.body;
+    if (!name) {
         return next(new AppError('Room name is required', 400));
     }
     // Create a new room
     const newRoom = await Room.create({
-        name: roomName,
+        name,
         roomType,
         participants: [req.user._id]
     });

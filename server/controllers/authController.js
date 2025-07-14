@@ -7,6 +7,7 @@ const User = require("../models/User");
 const protectRoute = catchAsyncError(async (req, res, next) => {
     //check if there is token
     let token;
+    console.log('req', req.headers)
     if (
         req.headers.authorization &&
         req.headers.authorization.startsWith('Bearer')
