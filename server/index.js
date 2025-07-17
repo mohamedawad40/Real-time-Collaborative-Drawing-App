@@ -3,6 +3,7 @@ const http = require('http');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { Server } = require('socket.io');
+const socket = require('./socket');
 const dotenv = require('dotenv');
 const errorHandler = require('./utils.js/errorHandling');
 dotenv.config();
@@ -19,7 +20,8 @@ const io = new Server(server, {
     }
 });
 
-require('./socket')(io);
+// Initialize socket.io
+socket(io);
 
 // Middleware
 app.use(cors(

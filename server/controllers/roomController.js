@@ -5,7 +5,6 @@ const Room = require("../models/Room");
 const getAllPublicRooms = async (req, res, next) => {
     try {
         const rooms = await Room.find({ roomType: 'public' }).select({ name: 1, participants: 1, roomType: 1 });
-        console.log('rooms', rooms)
         res.status(200).json({ success: true, rooms });
     } catch (error) {
         next(error);
