@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { login, logout, register } from '../app/hooks';
 
-const user = JSON.parse(localStorage.getItem('user'));
-
+const user = localStorage.getItem('token');
 const initialState = {
     user: user || null,
     isLoading: false,
