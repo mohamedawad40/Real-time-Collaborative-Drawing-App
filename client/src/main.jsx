@@ -4,9 +4,12 @@ import App from './App.jsx'
 import  store  from './app/store.js'
 import { Provider } from 'react-redux'
 import { AppRouter } from './routes/AppRouter.jsx'
+import { SocketProvider } from './context/SocketContext.jsx'
 
 createRoot(document.getElementById('root')).render(
     <Provider store={store}>
-      <AppRouter />
+        <SocketProvider>
+            <AppRouter />
+        </SocketProvider>
     </Provider>,
 )
